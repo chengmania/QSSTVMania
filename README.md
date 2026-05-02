@@ -30,11 +30,46 @@ Maintained by **Greg Cheng — KC3SMW**
 
 ---
 
-## Installation
+## Installing on Linux (Step-by-Step for Beginners)
 
-### Dependencies
+Don't worry if you've never compiled software before — these instructions walk you through every step. This works on **Ubuntu, Linux Mint, Debian**, and most other Debian-based distros.
 
-For apt based distros you can install dependencies as follows:
+### What You'll Need
+- A computer running Linux (Ubuntu 20.04 or newer recommended)
+- An internet connection
+- About 10–15 minutes
+
+---
+
+### Step 1 — Open a Terminal
+
+Press **Ctrl + Alt + T** on your keyboard. A black or dark window will appear — that's the terminal. You'll type commands here and press **Enter** after each one.
+
+> **Tip:** When you see a command in a grey box like this, type it exactly as shown (or copy and paste it) and press Enter.
+
+---
+
+### Step 2 — Download the Source Code
+
+If you have `git` installed, run:
+
+```bash
+git clone https://github.com/chengmania/QSSTVMania.git
+```
+
+Then move into the project folder:
+
+```bash
+cd QSSTVMania
+```
+
+If you don't have git, you can download a ZIP from the GitHub page and unzip it instead.
+
+---
+
+### Step 3 — Install Required Libraries
+
+QSSTVMania needs some helper programs (called dependencies) installed before it can be built. Copy and paste this entire block into your terminal and press Enter:
 
 ```bash
 sudo apt install pkg-config g++ libfftw3-dev \
@@ -44,39 +79,102 @@ sudo apt install pkg-config g++ libfftw3-dev \
   libv4l-dev build-essential
 ```
 
-### macOS Dependencies
+Your computer will ask for your **password** (the same one you use to log in). Type it and press Enter — you won't see any characters appear as you type, that's normal.
 
-For macOS users, you can install dependencies using Homebrew:
+When it finishes, you'll be back at the prompt.
+
+---
+
+### Step 4 — Create a Build Folder
+
+Run these two commands one at a time:
+
+```bash
+mkdir src/build
+```
+
+```bash
+cd src/build
+```
+
+This creates a temporary workspace where the program gets compiled, keeping the source folder clean.
+
+---
+
+### Step 5 — Configure the Build
+
+```bash
+qmake ..
+```
+
+You should see several lines of output ending with something like `Project MESSAGE: ...`. That means it worked.
+
+---
+
+### Step 6 — Compile the Program
+
+```bash
+make -j$(nproc)
+```
+
+This is the step that actually builds the program. It may take a few minutes depending on your computer. You'll see lots of text scroll by — that's normal. Wait for it to finish and return to the prompt.
+
+> **What does `-j$(nproc)` mean?** It tells the compiler to use all your CPU cores at once to go faster. Your system figures out how many you have automatically.
+
+---
+
+### Step 7 — Install the Program
+
+```bash
+sudo make install
+```
+
+Enter your password again if asked. This copies the finished program to the right place on your system so you can launch it from your applications menu.
+
+---
+
+### Step 8 — Launch QSSTVMania
+
+You can now start the program by typing:
+
+```bash
+qsstvmania
+```
+
+Or search for **QSSTVMania** in your applications menu.
+
+---
+
+### Something Went Wrong?
+
+- **"command not found" after `qmake`** — Re-run Step 3 to make sure all dependencies installed successfully.
+- **Errors during `make`** — See the [Debug Compile](#debug-compile) section below and note the exact error message.
+- **Program doesn't start** — Make sure PulseAudio is running: `pulseaudio --start`
+
+---
+
+## macOS Installation
+
+For macOS users, install dependencies using [Homebrew](https://brew.sh):
 
 ```bash
 brew install qt@5 fftw hamlib openjpeg pulseaudio qwt pkg-config
 ```
 
-Note: You must have PulseAudio running for sound to work:
+Start PulseAudio (required for sound):
 
 ```bash
 brew services start pulseaudio
 ```
 
----
-
-## Compile and Install
+Then build and install:
 
 ```bash
-mkdir src/build
-cd src/build
-
-# For Linux
-qmake ..
-
-# For macOS
+mkdir src/build && cd src/build
 /opt/homebrew/opt/qt@5/bin/qmake ..
-
 make -j$(nproc)
 sudo make install
 ```
-
-> **Note:** Replace `$(nproc)` with the number of CPU cores you want to use for parallel compilation, e.g. `make -j4`.
 
 ---
 
